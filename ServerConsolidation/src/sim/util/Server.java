@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,7 +21,7 @@ public class Server {
 
     private int id;
     private HashMap<String, Integer> confMap;
-    private List<Task> taskList;
+    private ArrayList<Task> taskList;
 
     public Server(int id) {
         this.id = id;
@@ -52,13 +51,14 @@ public class Server {
         }
     }
 
-    public List<Task> getTaskList() {
+    public ArrayList<Task> getTaskList() {
         return taskList;
     }
 
-    public void setTaskList(List<Task> taskList) {
+    public void setTaskList(ArrayList<Task> taskList) {
         this.taskList = taskList;
     }
+
 
     public HashMap<String, Integer> getConfMap() {
         return confMap;
@@ -100,14 +100,18 @@ public class Server {
     }
 
     public boolean isAllocatable(Task t, String param){
-        int capacity = (int)confMap.get(param), total = 0;
-        for(Task task : taskList){
-            total += (int)task.getConfMap().get(param);
-        }
-        return ((capacity - total) > ((int)t.getConfMap().get(param)));
+        return (getAvailable(param) > ((int)t.getConfMap().get(param)));
     }
     
     public boolean isStoppable() {
         return taskList.isEmpty();
+    }
+    
+    public int getAvailable(String param){
+        int capacity = (int)confMap.get(param), total = 0;
+        for(Task task : taskList){
+            total += (int)task.getConfMap().get(param);
+        }
+     return capacity - total;   
     }
 }

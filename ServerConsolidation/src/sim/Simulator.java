@@ -29,8 +29,8 @@ public class Simulator {
                 System.out.println("1 - Change Configuration Parameters");
                 System.out.println("2 - Server operations");
                 System.out.println("3 - Task operations");
-                System.out.println("5 - Display environment status");
-                System.out.println("6 - Exit ");
+                System.out.println("4 - Display environment status");
+                System.out.println("5 - Exit ");
 
                 int choice = Integer.parseInt(din.readLine());
                 switch (choice) {
@@ -133,15 +133,18 @@ public class Simulator {
                                 break;
                         }
                         break;
-                    case 6:
+                    case 4:
+                        System.out.println(manager);
+                        break;
+                    case 5:
                         System.out.println("System will exit now.");
                         System.exit(0);
                     default:
                         System.out.println("Invalid Choice, try again");
                 }
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 System.out.println("Please enter valid data.");
-                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
+//                Logger.getLogger(Simulator.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }

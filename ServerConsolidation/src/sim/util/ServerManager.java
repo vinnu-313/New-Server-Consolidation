@@ -5,6 +5,8 @@
  */
 package sim.util;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +16,9 @@ import java.util.List;
 public class ServerManager {
 
     private List<Server> serverList;
+
     public ServerManager() {
+        serverList = new ArrayList<>();
     }
 
     public ServerManager(List<Server> serverList) {
@@ -28,12 +32,11 @@ public class ServerManager {
     public void setServerList(List<Server> serverList) {
         this.serverList = serverList;
     }
-  
-    
-    public void addServer(int id, Config conf){
-        if(getServerById(id) == null){
+
+    public void addServer(int id, Config conf) {
+        if (getServerById(id) == null) {
             serverList.add(new Server(id, conf));
-        }else{
+        } else {
             System.out.println("Server with given ID already exists. Try with different ID");
         }
     }
@@ -47,26 +50,86 @@ public class ServerManager {
         }
         return sb.toString();
     }
-    
-    public Server getServerById(int id){
+
+    public Server getServerById(int id) {
+        if (serverList.isEmpty()) {
+            return null;
+        }
         for (Server server : serverList) {
-            if(server.getId() == id){
+            if (server.getId() == id) {
                 return server;
             }
         }
         return null;
     }
 
+    public Server getServerByTask(int id) {
+        for (Server s : serverList) {
+            for (Task task : s.getTaskList()) {
+                if (task.getId() == id) {
+                    return s;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Server getServerByTask(Task t) {
+        for (Server s : serverList) {
+            if (s.getTaskList().contains(t)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
     public void removeServer(int id) {
-        if(getServerById(id) == null){
+        if (getServerById(id) == null) {
             System.out.println("Server with specified ID not found.");
-        }else{
-            if(getServerById(id).isStoppable()){
+        } else {
+            if (getServerById(id).isStoppable()) {
                 serverList.remove(getServerById(id));
-            }else{
+            } else {
                 System.out.println("There are currently tasks running on the server, hence can't be removed.");
             }
         }
     }
-    
+
+    public void addTask(int id, Config conf) throws IOException {
+        
+        if(getTaskById(id) == null ){
+            Task t = new Task(id, conf);
+            for(Server s : serverList){
+                if(s.isAllocatable(t, conf.getConf().get(0))){
+                    s.getTaskList().add(t);
+                    System.out.println("Task is allocated on server : " +s.getId());
+                    return;
+                }
+            }
+            System.out.println("Failed to allocate with normal allocation. Going for migration");
+            
+        }
+    }
+
+    public void removeTask(int id) {
+        Server s = getServerByTask(id);
+        System.out.println(s);
+        if (s == null) {
+            System.out.println("Task doesn't exist");
+        } else {
+            System.out.println(getTaskById(id));
+            s.getTaskList().remove(getTaskById(id));
+        }
+    }
+
+    private Task getTaskById(int id) {
+        for (Server s : serverList) {
+            for (Task t : s.getTaskList()) {
+                if (t.getId() == id) {
+                    return t;
+                }
+            }
+        }
+        return null;
+    }
 }

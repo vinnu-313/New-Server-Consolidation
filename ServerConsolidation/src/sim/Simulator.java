@@ -20,7 +20,7 @@ public class Simulator {
 
     private static Config conf = null;
     private static ServerManager manager = null;
-    
+
     public static void main(String args[]) {
         DataInputStream din = new DataInputStream(System.in);
         while (true) {
@@ -77,7 +77,7 @@ public class Simulator {
                                 if (manager == null) {
                                     manager = new ServerManager();
                                 }
-                                System.out.println("Enter the ID for the server : ");
+                                System.out.print("Enter the ID for the server : ");
                                 manager.addServer(Integer.parseInt(din.readLine()), conf);
                                 break;
                             case 2:
@@ -94,6 +94,39 @@ public class Simulator {
                                 }
                                 System.out.print("Enter the Server ID to remove : ");
                                 manager.removeServer(Integer.parseInt(din.readLine()));
+                                break;
+                            default:
+                                System.out.println("Invalid Choice, try again");
+                                break;
+                        }
+                        break;
+                    case 3:
+                        System.out.println("1 - Add Task");
+                        System.out.println("2 - View all Tasks");
+                        System.out.println("3 - Remove Task");
+                        choice = Integer.parseInt(din.readLine());
+                        switch (choice) {
+                            case 1:
+                                if (manager == null) {
+                                    manager = new ServerManager();
+                                }
+                                System.out.print("Enter the ID for the task : ");
+                                manager.addTask(Integer.parseInt(din.readLine()), conf);
+                                break;
+                            case 2:
+                                if (manager == null || manager.getServerList().isEmpty()) {
+                                    System.out.println("No Tasks yet.");
+                                    break;
+                                }
+                                System.out.println(manager);
+                                break;
+                            case 3:
+                                if (manager == null || manager.getServerList().isEmpty()) {
+                                    System.out.println("No servers to remove from");
+                                    break;
+                                }
+                                System.out.print("Enter the Task ID to remove : ");
+                                manager.removeTask(Integer.parseInt(din.readLine()));
                                 break;
                             default:
                                 System.out.println("Invalid Choice, try again");
